@@ -2,10 +2,19 @@ const name = document.getElementById("name");
 const designMenu = document.getElementById("design");
 const colorMenu = document.getElementById("color");
 const otherInput = document.getElementById("other-title");
+const paymentMenu = document.getElementById("payment");
 let total = 0;
 
 name.focus();
 otherInput.style.display = "none"; 
+
+function toggleElement(element, toggle)
+{
+    if (toggle === "off")
+        element.classList.add("is-hidden");
+    else if (toggle === "on" && element.classList.contains('is-hidden'))
+        element.classList.remove("is-hidden");
+}
 
 for(let i = 1; i < colorMenu.options.length; i++)
 {
@@ -79,3 +88,27 @@ document.querySelector('.activities').addEventListener('change', (event) => {
     console.log(`Total cost is ${total}`)
 })
 
+paymentMenu.addEventListener("change", (event) => {
+    const option = event.target;
+
+    if(option.value == "credit card")
+    {
+        toggleElement(document.querySelector("#paypal"), "off");
+        toggleElement(document.querySelector("#bitcoin"), "off");
+        toggleElement(document.querySelector("#credit-card"), "on");
+    }
+    else if(option.value == "paypal")
+    {
+        toggleElement(document.querySelector("#paypal"), "on");
+        toggleElement(document.querySelector("#bitcoin"), "off");
+        toggleElement(document.querySelector("#credit-card"), "off");
+    }
+    else
+    {
+        toggleElement(document.querySelector("#paypal"), "off");
+        toggleElement(document.querySelector("#bitcoin"), "on");
+        toggleElement(document.querySelector("#credit-card"), "off");
+    }
+
+    console.log(option.value);
+})
