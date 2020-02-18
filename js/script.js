@@ -1,3 +1,4 @@
+const form = document.querySelector("form");
 const name = document.getElementById("name");
 const designMenu = document.getElementById("design");
 const colorMenu = document.getElementById("color");
@@ -6,7 +7,9 @@ const paymentMenu = document.getElementById("payment");
 let total = 0;
 
 name.focus();
+document.querySelector("#credit-card").selected = true;
 otherInput.style.display = "none"; 
+
 
 function toggleElement(element, toggle)
 {
@@ -14,6 +17,59 @@ function toggleElement(element, toggle)
         element.classList.add("is-hidden");
     else if (toggle === "on" && element.classList.contains('is-hidden'))
         element.classList.remove("is-hidden");
+}
+
+function nameValidation()
+{
+    if(name.value.length > 0)
+        return true;
+    else
+        return false; 
+}
+
+function emailValidation()
+{
+    emailRegex = /^\w+@\w+.com$/;
+    const email = document.getElementById("mail").value;
+    
+    return emailRegex.test(email);
+}
+
+function activityValidation()
+{
+    const activities = document.querySelectorAll("input[type=checkbox]");
+    
+    for(let i = 0; i < activities.length; i++)
+    {
+        if(activities[i].checked)
+            return true;
+    }
+
+    return false;
+}
+
+function creditCardValidation()
+{
+    const ccNum = document.getElementById("cc-num").value;
+    const zip = document.getElementById("zip").value;
+    const cvv = document.getElementById("cvv").value;
+    ccRegex = /^\d{13,16}$/;
+    zipRegex = /^\d{5}$/;
+    cvvRegex = /^\d{3}$/;
+
+    for(let i = 0; i < paymentMenu.length; i++)
+    {
+        if(paymentMenu[i].value == "credit card")
+        {
+            if(!paymentMenu[i].selected)
+                return true;
+        }
+    }
+    console.log("paying with credit card")
+    if(!ccRegex.test(ccNum) || !zipRegex.test(zip) || !cvvRegex.test(cvv))
+        return false;
+        
+    return true;
 }
 
 for(let i = 1; i < colorMenu.options.length; i++)
@@ -24,7 +80,7 @@ for(let i = 1; i < colorMenu.options.length; i++)
 designMenu.addEventListener("change", (event)=> {
     if(event.target.value == "js puns")
     {
-        colorMenu.options[0].selected = true;
+        colorMenu.options[1].selected = true;
         for(let i = 0; i < colorMenu.options.length; i++)
         {
             const value = colorMenu.options[i].value;
@@ -38,7 +94,7 @@ designMenu.addEventListener("change", (event)=> {
     }
     else if(event.target.value == "heart js")
     {
-        colorMenu.options[3].selected = true;
+        colorMenu.options[4].selected = true;
         for(let i = 0; i < colorMenu.options.length; i++)
         {
             const value = colorMenu.options[i].value;
@@ -58,7 +114,7 @@ document.querySelector('.activities').addEventListener('change', (event) => {
     const clickedType = clicked.getAttribute("data-day-and-time");
     const cost = parseInt(clicked.getAttribute("data-cost"), 10);
     
-    console.log(cost)
+    console.log(cost);
     console.log(clicked);
     console.log(clickedType);
     
@@ -112,3 +168,22 @@ paymentMenu.addEventListener("change", (event) => {
 
     console.log(option.value);
 })
+
+form.addEventListener("submit", (event) => {
+    if(!nameValidation() || !emailValidation() || !activityValidation() || !creditCardValidation())
+    {
+        event.preventDefault();
+        console.log(`name was ${nameValidation()}`);
+        console.log(`email was ${emailValidation()}`)
+        console.log(`activity selected was ${activityValidation()}`)
+        console.log(`credit card number was ${creditCardValidation()}`)
+    }
+
+    // if(paymentMenu.selected.value == "credit card")
+    // {
+    //     event.preventDefault();
+    // }
+    
+    //alert("penus");
+})
+
