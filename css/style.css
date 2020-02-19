@@ -180,6 +180,14 @@ option {
   clear: both;
 }
 
+.border-default {
+	border-color: rgb(111, 157, 220);
+}
+
+.border-error {
+	border-color: red;
+}
+
 /* ================================= 
   Media Queries
 ==================================== */
