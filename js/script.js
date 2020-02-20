@@ -2,11 +2,15 @@ const form = document.querySelector("form");
 const name = document.getElementById("name");
 const titleMenu = document.getElementById("title");
 const designMenu = document.getElementById("design");
+const colorMenuDiv = document.getElementById("colors-js-puns");
 const colorMenu = document.getElementById("color");
 const otherInput = document.getElementById("other-title");
 const paymentMenu = document.getElementById("payment");
 const costElement = document.createElement("p");
 const errorMessage = document.createElement("p");
+const blankErrorMessage = document.createElement("p");
+const lengthErrorMessage = document.createElement("p");
+
 let total = 0;
  
 
@@ -24,13 +28,12 @@ function toggleError(element, toggle)
 {
     if(toggle === "valid")
     {
-        element.classList.add("border-default");
-        element.classList.remove("border-error");
+        element.style.borderColor = "rgb(111, 157, 220)"
+        
     }
     else if(toggle === "invalid")
     {
-        element.classList.add("border-error");
-        element.classList.remove("border-default"); 
+        element.style.borderColor = "red";
     }
 }
 
@@ -91,9 +94,24 @@ function creditCardValidation()
     if(!ccRegex.test(ccNum) || !zipRegex.test(zip) || !cvvRegex.test(cvv))
     {
         if(!ccRegex.test(ccNum))
+        {
             toggleError(document.getElementById("cc-num"), "invalid");
+            
+            if(ccNum.length == 0) {
+                toggleElement(blankErrorMessage, "on");
+                toggleElement(lengthErrorMessage, "off");
+            }
+            else{
+                toggleElement(lengthErrorMessage, "on");
+                toggleElement(blankErrorMessage, "off");
+            }
+        }
         else
+        {
             toggleError(document.getElementById("cc-num"), "valid");
+            toggleElement(blankErrorMessage, "off");
+            toggleElement(lengthErrorMessage, "off");
+        }
 
         if(!zipRegex.test(zip))
             toggleError(document.getElementById("zip"), "invalid");
@@ -108,7 +126,11 @@ function creditCardValidation()
         
         return false;
     }
-        
+    
+    toggleError(document.getElementById("cc-num"), "valid");
+    toggleError(document.getElementById("zip"), "valid");
+    toggleError(document.getElementById("cvv"), "valid");
+
     return true;
 }
 
@@ -125,6 +147,7 @@ titleMenu.addEventListener("change", (event) => {
 designMenu.addEventListener("change", (event)=> {
     if(event.target.value == "js puns")
     {
+        toggleElement(colorMenuDiv, "on");
         colorMenu.options[1].selected = true;
         for(let i = 0; i < colorMenu.options.length; i++)
         {
@@ -139,6 +162,7 @@ designMenu.addEventListener("change", (event)=> {
     }
     else if(event.target.value == "heart js")
     {
+        toggleElement(colorMenuDiv, "on");
         colorMenu.options[4].selected = true;
         for(let i = 0; i < colorMenu.options.length; i++)
         {
@@ -226,27 +250,62 @@ paymentMenu.addEventListener("change", (event) => {
 
 //form submission event listener
 form.addEventListener("submit", (event) => {
-    if(!nameValidation() || !emailValidation() || !activityValidation() || !creditCardValidation())
+    if(!creditCardValidation()  || !emailValidation() || !activityValidation() || !nameValidation())
     {
         event.preventDefault();
-        name.style.borderColor = "red";
-        document.getElementById("mail").style.borderColor = "red";
-        toggleElement(errorMessage, "on");
-        console.log(`credit card number was ${creditCardValidation()}`)
-    }
+        
+        if(!nameValidation())
+        {
+            toggleError(name, "invalid")
+        }
+        
+        if(!emailValidation())
+            toggleError(document.getElementById("mail"), "invalid");
+        
+        if(!activityValidation())
+            toggleElement(errorMessage, "on");
 
+    }
+    
+})
+
+//name input keyup event listener
+name.addEventListener("keyup", (event) => {
+    if(!nameValidation())
+        toggleError(name, "invalid")
+    else
+        toggleError(name, "valid")
+})
+
+//email input keyup event listener
+document.getElementById("mail").addEventListener("keyup", (event) => {
+    if(!emailValidation())
+        toggleError(document.getElementById("mail"), "invalid")
+    else
+        toggleError(document.getElementById("mail"), "valid")
 })
 
 name.focus();
 document.querySelector("#credit-card").selected = true;
 toggleElement(otherInput, "off");
+toggleElement(colorMenuDiv, "off");
 
 errorMessage.classList.add("is-hidden");
 errorMessage.style.color = "red";
 errorMessage.innerHTML = `You must register for at least one activity`;
 
+blankErrorMessage.classList.add("is-hidden");
+blankErrorMessage.style.color = "red";
+blankErrorMessage.innerHTML = `Credit card number cannot be blank`;
+
+lengthErrorMessage.classList.add("is-hidden");
+lengthErrorMessage.style.color = "red";
+lengthErrorMessage.innerHTML = `Credit card number must be between 13 and 16 numbers`;
+
 document.querySelector('.activities').appendChild(errorMessage);
 document.querySelector('.activities').appendChild(costElement);
+document.getElementById("credit-card").appendChild(blankErrorMessage);
+document.getElementById("credit-card").appendChild(lengthErrorMessage);
 
 for(let i = 1; i < colorMenu.options.length; i++)
 {
