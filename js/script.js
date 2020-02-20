@@ -289,10 +289,12 @@ name.focus();
 document.querySelector("#credit-card").selected = true;
 toggleElement(otherInput, "off");
 toggleElement(colorMenuDiv, "off");
+toggleElement(document.querySelector("#paypal"), "off");
+toggleElement(document.querySelector("#bitcoin"), "off");
 
 errorMessage.classList.add("is-hidden");
 errorMessage.style.color = "red";
-errorMessage.innerHTML = `You must register for at least one activity`;
+errorMessage.innerHTML = "You must select at least one activity";
 
 blankErrorMessage.classList.add("is-hidden");
 blankErrorMessage.style.color = "red";
